@@ -69,6 +69,9 @@ SOFTWARE.
     #define DIVERSITY_MAX_CHECKS 5
 #endif
 
+#define PULLDN_PIN A5
+#define VIDEO_ON_PIN A2
+
 // this two are minimum required
 #define buttonUp 2
 #define buttonMode 3

@@ -148,29 +148,35 @@ void setup()
     pinMode(buzzer, OUTPUT); // Feedback buzzer (active buzzer, not passive piezo)
     digitalWrite(buzzer, HIGH);
     // minimum control pins
-    pinMode(buttonUp, INPUT);
-    digitalWrite(buttonUp, INPUT_PULLUP);
-    pinMode(buttonMode, INPUT);
-    digitalWrite(buttonMode, INPUT_PULLUP);
+    pinMode(buttonUp, INPUT_PULLUP);
+    pinMode(buttonMode, INPUT_PULLUP);
     // optional control
-    pinMode(buttonDown, INPUT);
-    digitalWrite(buttonDown, INPUT_PULLUP);
-    pinMode(buttonSave, INPUT);
-    digitalWrite(buttonSave, INPUT_PULLUP);
+    pinMode(buttonDown, INPUT_PULLUP);
+    pinMode(buttonSave, INPUT_PULLUP);
     //Receiver Setup
     pinMode(receiverA_led,OUTPUT);
 #ifdef USE_DIVERSITY
     pinMode(receiverB_led,OUTPUT);
 #endif
+
+    pinMode(PULLDN_PIN,OUTPUT);
+    digitalWrite(PULLDN_PIN,0);
+
     setReceiver(useReceiverA);
 #ifdef DEBUG
     Serial.begin(115200);
     Serial.println(F("START:"));
 #endif
+    pinMode(VIDEO_ON_PIN, OUTPUT);
+    digitalWrite(VIDEO_ON_PIN, LOW);
+
+
     // SPI pins for RX control
-    pinMode (slaveSelectPin, OUTPUT);
-    pinMode (spiDataPin, OUTPUT);
-	pinMode (spiClockPin, OUTPUT);
+    pinMode(slaveSelectPin, OUTPUT);
+    pinMode(spiDataPin, OUTPUT);
+    pinMode(spiClockPin, OUTPUT);
+
+
 
     // use values only of EEprom is not 255 = unsaved
     uint8_t eeprom_check = EEPROM.read(EEPROM_ADR_STATE);
@@ -270,8 +276,8 @@ void loop()
             delay(100);
             press_time++;
         }
-        #define MAX_MENU 4
-        #define MENU_Y_SIZE 15
+#define MAX_MENU 4
+#define MENU_Y_SIZE 15
 
         char menu_id=state_last_used-1;
         // Show Mode Screen
@@ -311,7 +317,7 @@ void loop()
                 case 2: // manual mode
                     state=STATE_MANUAL;
                 break;
-            #ifdef USE_DIVERSITY
+#ifdef USE_DIVERSITY
                 case 3: // Diversity
                     if(isDiversity()) {
                         state=STATE_DIVERSITY;
@@ -321,10 +327,10 @@ void loop()
                         state=STATE_SETUP_MENU;
                     }
                 break;
-            #else
+#else
                 case 3: // Skip
                     menu_id++;
-            #endif
+#endif
                 case 4: // Setup Menu
                     state=STATE_SETUP_MENU;
                 break;
@@ -805,7 +811,7 @@ void loop()
                         in_menu = 0;
                         for (uint8_t loop=0;loop<10;loop++)
                         {
-                            #define RSSI_SETUP_BEEP 25
+#define RSSI_SETUP_BEEP 25
                             beep(RSSI_SETUP_BEEP); // beep & debounce
                             delay(RSSI_SETUP_BEEP); // debounce
                         }
@@ -925,7 +931,7 @@ void wait_rssi_ready()
     uint16_t tune_time = millis()-time_of_tune;
     // module need >20ms to tune.
     // 25 ms will do a 40 channel scan in 1 second.
-    #define MIN_TUNE_TIME 25
+#define MIN_TUNE_TIME 25
     if(tune_time < MIN_TUNE_TIME)
     {
         // wait until tune time is full filled
