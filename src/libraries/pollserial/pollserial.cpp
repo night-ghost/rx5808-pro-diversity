@@ -116,7 +116,9 @@ int pollserial::read() {
 	else {
 		uint8_t c = rxbuffer.buffer[rxbuffer.tail];
 		//tail = (tail + 1) & 63;
-		if (rxbuffer.tail == BUFFER_SIZE)
+		// BUG fixed by Michael Krumpus:
+		// if (rxbuffer.tail == BUFFER_SIZE)
+		if (rxbuffer.tail == (BUFFER_SIZE-1))
 			rxbuffer.tail = 0;
 		else
 			rxbuffer.tail++;
@@ -128,7 +130,11 @@ void pollserial::flush() {
 	rxbuffer.head = rxbuffer.tail;
 }
 
+#if defined(ARDUINO) && ARDUINO >= 100
+size_t pollserial::write(uint8_t c) {
+#else
 void pollserial::write(uint8_t c) {
+#endif
 #if defined ( UDR0 )
 	while (!((UCSR0A) & _BV(UDRE0)));
 	UDR0 = c;

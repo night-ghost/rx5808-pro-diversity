@@ -93,9 +93,9 @@ char TVout::begin(uint8_t mode, uint8_t x, uint8_t y) {
 
 /* Stop video render and free the used memory.
  */
- void TVout::end() {
-	TIMSK1 = 0;
-	free(screen);
+void TVout::end() {
+    TIMSK1 = 0;
+    free(screen);
 }
 /* Enable genlock
 */
@@ -120,22 +120,22 @@ void TVout::video_clock(uint8_t mode) {
 */
 void TVout::fill(uint8_t color) {
 	switch(color) {
-		case BLACK:
-			cursor_x = 0;
-			cursor_y = 0;
-			for (int i = 0; i < (display.hres)*display.vres; i++)
-				display.screen[i] = 0;
-			break;
-		case WHITE:
-			cursor_x = 0;
-			cursor_y = 0;
-			for (int i = 0; i < (display.hres)*display.vres; i++)
-				display.screen[i] = 0xAA;
-			break;
-		case INVERT:
-			for (int i = 0; i < display.hres*display.vres; i++)
-				display.screen[i] = ~display.screen[i];
-			break;
+	case BLACK:
+		cursor_x = 0;
+		cursor_y = 0;
+		for (int i = 0; i < (display.hres)*display.vres; i++)
+			display.screen[i] = 0;
+		break;
+	case WHITE:
+		cursor_x = 0;
+		cursor_y = 0;
+		for (int i = 0; i < (display.hres)*display.vres; i++)
+			display.screen[i] = 0xAA;
+		break;
+	case INVERT:
+		for (int i = 0; i < display.hres*display.vres; i++)
+			display.screen[i] = ~display.screen[i];
+		break;
 	}
 } // end of fill
 

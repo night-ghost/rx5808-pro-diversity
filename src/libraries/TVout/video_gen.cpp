@@ -132,16 +132,17 @@ void setup_video_timing()
 
 void start_internal_clock()
 {
-	// inverted fast pwm mode on timer 1
-	TCCR1A = _BV(COM1A1) | _BV(COM1A0) | _BV(WGM11);
-	TCCR1B = _BV(WGM13) | _BV(WGM12) | _BV(CS10);
-	// all timing and video timing stuff
+    // inverted fast pwm mode on timer 1
+    TCCR1A = _BV(COM1A1) | _BV(COM1A0) | _BV(WGM11);
+    TCCR1B = _BV(WGM13) | _BV(WGM12) | _BV(CS10);
+    // all timing and video timing stuff
     setup_video_timing();
     // start timer
-	TIMSK1 = _BV(TOIE1);
+    TIMSK1 = _BV(TOIE1);
     // set state
     display.clock_source=CLOCK_INTERN;
 }
+
 void start_external_clock()
 {
     // disable timer1 for free running video
@@ -159,6 +160,7 @@ void start_external_clock()
     // set state
     display.clock_source=CLOCK_EXTERN;
 }
+
 // clock selector
 // MUST do full init of timing generator and video counters
 void select_clock(uint8_t mode)
@@ -166,12 +168,9 @@ void select_clock(uint8_t mode)
     cli();
     if(mode != display.clock_source) // action only on demand
     {
-        if(mode)
-        {
+        if(mode)  {
             start_external_clock();
-        }
-        else
-        {
+        }        else        {
             start_internal_clock();
         }
     }
@@ -180,8 +179,7 @@ void select_clock(uint8_t mode)
 
 // ISR function for vertical handline, only required for exernal vsync
 void vertical_handle() {
-    if(display.clock_source) // externa vsync ONLY if required
-    {
+    if(display.clock_source) { // externa vsync ONLY if required
         display.scanLine = 0;
     }
 }
@@ -191,6 +189,7 @@ ISR(TIMER1_OVF_vect) {
     // original TVOUT handler
  	hbi_hook();
 	line_handler();
+
     if(!display.clock_source)
     {
 
@@ -200,8 +199,8 @@ ISR(TIMER1_OVF_vect) {
 // render a line based on external sync signal
 ISR(TIMER1_CAPT_vect) {
     TCNT1 -= ICR1;
- 	hbi_hook();
-	line_handler();
+    hbi_hook();
+    line_handler();
 }
 
 // regular render code
@@ -242,15 +241,12 @@ void vsync_line() {
 		display.scanLine = 0;
 		display.frames++;
 
-		if (remainingToneVsyncs != 0)
-		{
-			if (remainingToneVsyncs > 0)
-			{
+		if (remainingToneVsyncs != 0) {
+			if (remainingToneVsyncs > 0) {
 				remainingToneVsyncs--;
 			}
 
-		} else
-		{
+		} else		{
 			TCCR2B = 0; //stop the tone
  			PORTB &= ~(_BV(SND_PIN));
 		}

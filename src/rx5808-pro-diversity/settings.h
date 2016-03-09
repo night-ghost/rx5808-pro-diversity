@@ -49,14 +49,17 @@ SOFTWARE.
 #define spiClockPin 12
 
 // Receiver PINS
-#define receiverA_led A0
+#define SWITCH_0_PIN A0
 #define rssiPinA A6
+
+
+#define SWITCH_1_PIN A1
+
 
 #define useReceiverA 1
 
 #ifdef USE_DIVERSITY
     // Diversity
-    #define receiverB_led A1
     #define rssiPinB A7
     #define useReceiverAuto 0
     #define useReceiverB 2
@@ -73,11 +76,14 @@ SOFTWARE.
 #define VIDEO_ON_PIN A2
 
 // this two are minimum required
-#define buttonUp 2
-#define buttonMode 3
+#define buttonUp 4
+#define buttonMode 5
 // optional comfort buttons
-#define buttonDown 4
-#define buttonSave 5
+#define buttonDown 6
+
+#define buttonSave A3
+#define BATTERY_IN A4
+
 // Buzzer
 #define buzzer 6
 
@@ -86,7 +92,8 @@ SOFTWARE.
 // shorter values will make it more reactive, but may lead to double trigger
 #define KEY_DEBOUNCE 200
 
-#define led 13
+#define led 13 // ARDUINO led PIN
+
 // number of analog rssi reads to average for the current check.
 #define RSSI_READS 50
 // RSSI default raw range
@@ -133,12 +140,12 @@ SOFTWARE.
     #define EEPROM_ADR_RSSI_MIN_B_H 8
     #define EEPROM_ADR_RSSI_MAX_B_L 9
     #define EEPROM_ADR_RSSI_MAX_B_H 10
-
-    #define isDiversity() (analogRead(rssiPinB) >= 5)
 #endif
 
 #define EEPROM_ADR_BEEP 11
 #define EEPROM_ADR_ORDERBY 12
 #define EEPROM_ADR_CALLSIGN 20
 
+
 #endif // file_defined
+

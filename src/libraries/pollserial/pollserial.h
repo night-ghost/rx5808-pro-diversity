@@ -43,7 +43,11 @@ class pollserial : public Print {
 		uint8_t available(void);
 		int read(void);
 		void flush(void);
+#if defined(ARDUINO) && ARDUINO >= 100
+		virtual size_t write(uint8_t);
+#else
 		virtual void write(uint8_t);
+#endif
 		using Print::write; // pull in write(str) and write(buf, size) from Print
 };
 

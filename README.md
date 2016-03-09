@@ -33,6 +33,7 @@ This project originated [here](https://code.google.com/p/rx5808-pro/) and has be
 - *(NEW)* **OLED Version** - Use a 128x64 OLED Display instead of TV_OUT.
 - *(NEW)* **Setup Menu** - Creating menu for toggling settings.
 - *(REMOVED)* ~~**DIP mode** - Set channel by extern DIP switch~~
+- *(new) 4-way AV-switch instead of manual - menu visible 10 seconds after any key press
 
 ##Usage
 ####Screens

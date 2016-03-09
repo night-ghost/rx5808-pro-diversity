@@ -24,11 +24,6 @@ Modified 23 November 2006 by David A. Mellis
 
 #include "TVout.h"
 
-
-uint8_t TVout::cursor_x,TVout::cursor_y;
-const unsigned char * TVout::font;
-uint8_t * TVout::screen;
-
 void TVout::select_font(const unsigned char * f) {
 	font = f;
 }
@@ -66,31 +61,31 @@ void TVout::write(const uint8_t *buffer, uint8_t size)
 
 void TVout::write(uint8_t c) {
 	switch(c) {
-	case '\0':			//null
-		break;
-	case '\n':			//line feed
-		cursor_x = 0;
-		inc_txtline();
-		break;
-	case 8:				//backspace
-		cursor_x -= pgm_read_byte(font);
-		print_char(cursor_x,cursor_y,' ');
-		break;
-	case 13:			//carriage return !?!?!?!VT!?!??!?!
-		cursor_x = 0;
-		break;
-	case 14:			//form feed new page(clear screen)
-		//clear_screen();
-		break;
-	default:
-		if (cursor_x >= (display.hres*8 - pgm_read_byte(font))) {
+		case '\0':			//null
+			break;
+		case '\n':			//line feed
 			cursor_x = 0;
 			inc_txtline();
-			print_char(cursor_x,cursor_y,c);
-		}
-		else
-			print_char(cursor_x,cursor_y,c);
-		cursor_x += pgm_read_byte(font);
+			break;
+		case 8:				//backspace
+			cursor_x -= pgm_read_byte(font);
+			print_char(cursor_x,cursor_y,' ');
+			break;
+		case 13:			//carriage return !?!?!?!VT!?!??!?!
+			cursor_x = 0;
+			break;
+		case 14:			//form feed new page(clear screen)
+			//clear_screen();
+			break;
+		default:
+			if (cursor_x >= (display.hres*8 - pgm_read_byte(font))) {
+				cursor_x = 0;
+				inc_txtline();
+				print_char(cursor_x,cursor_y,c);
+			}
+			else
+				print_char(cursor_x,cursor_y,c);
+			cursor_x += pgm_read_byte(font);
 	}
 }
 
@@ -199,17 +194,20 @@ void TVout::println(double n, int digits)
   println();
 }
 
-void TVout::print_P(const char str[]) {
+void TVout::printPGM(const char str[]) {
 	char c;
-	
-	print_P(str);
+	while ((c = pgm_read_byte(str))) {
+		str++;
+		write(c);
+	}
 }
 
-void TVout::print_P(uint8_t x, uint8_t y, const char str[]) {
+void TVout::printPGM(uint8_t x, uint8_t y, const char str[]) {
 	char c;
 	cursor_x = x;
 	cursor_y = y;
-	while ((c = pgm_read_byte(str++))) {
+	while ((c = pgm_read_byte(str))) {
+		str++;
 		write(c);
 	}
 }
@@ -369,7 +367,7 @@ void TVout::printFloat(double number, uint8_t digits)
 
   // Print the decimal point, but only if there are digits beyond
   if (digits > 0)
-    print('.'); 
+    print("."); 
 
   // Extract digits from the remainder one at a time
   while (digits-- > 0)

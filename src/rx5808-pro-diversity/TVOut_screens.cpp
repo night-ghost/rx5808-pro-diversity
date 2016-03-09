@@ -30,7 +30,7 @@ SOFTWARE.
 
 #ifdef TVOUT_SCREENS
 #include "screens.h" // function headers
-#include <arduino.h>
+#include <Arduino.h>
 
 
 #include <TVout.h>
@@ -80,24 +80,26 @@ void screens::flip() {
 
 void screens::drawTitleBox(const char *title) {
     TV.draw_rect(0,0,127,95,  WHITE);
-    TV.print(((127-strlen(title)*8)/2), 3,  title);
+    TV.print_P(((127-strlen(title)*8)/2), 3,  title);
+
     TV.draw_rect(0,0,127,14,  WHITE,INVERT);
 }
 
 void screens::mainMenu(uint8_t menu_id) {
     reset(); // start from fresh screen.
-    drawTitleBox("MODE SELECTION");
+    drawTitleBox(PSTR("MODE SELECTION"));
 
-    TV.printPGM(10, 5+1*MENU_Y_SIZE, PSTR("Auto Search"));
-    TV.printPGM(10, 5+2*MENU_Y_SIZE, PSTR("Band Scanner"));
-    TV.printPGM(10, 5+3*MENU_Y_SIZE, PSTR("Manual Mode"));
+    TV.print_P(10, 5+1*MENU_Y_SIZE, PSTR("Auto Search"));
+    TV.print_P(10, 5+2*MENU_Y_SIZE, PSTR("Band Scanner"));
+    TV.print_P(10, 5+3*MENU_Y_SIZE, PSTR("Manual Mode"));
 #ifdef USE_DIVERSITY
-    if( isDiversity() )
-    {
-        TV.printPGM(10, 5+4*MENU_Y_SIZE, PSTR("Diversity"));
-    }
+//    if( isDiversity() ) {
+        TV.print_P(10, 5+4*MENU_Y_SIZE, PSTR("Diversity"));
+//    }
 #endif
-    TV.printPGM(10, 5+5*MENU_Y_SIZE, PSTR("Setup Menu"));
+    TV.print_P(10, 5+5*MENU_Y_SIZE, PSTR("Setup Menu"));
+
+    TV.print_P(10, 5+6*MENU_Y_SIZE, PSTR("Exit menu"));
     // selection by inverted box
 
     TV.draw_rect(0,3+(menu_id+1)*MENU_Y_SIZE,127,12,  WHITE, INVERT);
@@ -115,20 +117,20 @@ void screens::seekMode(uint8_t state) {
         drawTitleBox("AUTO SEEK MODE");
     }
     TV.draw_line(0,1*TV_Y_GRID,TV_X_MAX,1*TV_Y_GRID,WHITE);
-    TV.printPGM(5,TV_Y_OFFSET+1*TV_Y_GRID,  PSTR("BAND: "));
+    TV.print_P(5,TV_Y_OFFSET+1*TV_Y_GRID,  PSTR("BAND: "));
     TV.draw_line(0,2*TV_Y_GRID,TV_X_MAX,2*TV_Y_GRID,WHITE);
-    TV.printPGM(5 ,TV_Y_OFFSET-1+2*TV_Y_GRID,  PSTR("1 2 3 4 5 6 7 8"));
+    TV.print_P(5 ,TV_Y_OFFSET-1+2*TV_Y_GRID,  PSTR("1 2 3 4 5 6 7 8"));
     TV.draw_line(0,3*TV_Y_GRID,TV_X_MAX,3*TV_Y_GRID,WHITE);
-    TV.printPGM(5,TV_Y_OFFSET+3*TV_Y_GRID,  PSTR("FREQ:     GHz"));
+    TV.print_P(5,TV_Y_OFFSET+3*TV_Y_GRID,  PSTR("FREQ:     GHz"));
     TV.draw_line(0,4*TV_Y_GRID,TV_X_MAX,4*TV_Y_GRID,WHITE);
     TV.select_font(font4x6);
-    TV.printPGM(5,TV_Y_OFFSET+4*TV_Y_GRID,  PSTR("RSSI:"));
+    TV.print_P(5,TV_Y_OFFSET+4*TV_Y_GRID,  PSTR("RSSI:"));
     TV.draw_line(0,5*TV_Y_GRID-4,TV_X_MAX,5*TV_Y_GRID-4,WHITE);
     // frame for tune graph
     TV.draw_rect(0,TV_ROWS - TV_SCANNER_OFFSET,TV_X_MAX,13,  WHITE); // lower frame
-    TV.print(2, (TV_ROWS - TV_SCANNER_OFFSET + 2), "5645");
-    TV.print(57, (TV_ROWS - TV_SCANNER_OFFSET + 2), "5800");
-    TV.print(111, (TV_ROWS - TV_SCANNER_OFFSET + 2), "5945");
+    TV.print_P(2, (TV_ROWS - TV_SCANNER_OFFSET + 2), "5645");
+    TV.print_P(57, (TV_ROWS - TV_SCANNER_OFFSET + 2), "5800");
+    TV.print_P(111, (TV_ROWS - TV_SCANNER_OFFSET + 2), "5945");
 
 }
 
@@ -140,29 +142,29 @@ void screens::updateSeekMode(uint8_t state, uint8_t channelIndex, uint8_t channe
         // show current used channel of bank
         if(channelIndex > 31)
         {
-            TV.printPGM(50,TV_Y_OFFSET+1*TV_Y_GRID,  PSTR("C/Race   "));
+            TV.print_P(50,TV_Y_OFFSET+1*TV_Y_GRID,  PSTR("C/Race   "));
         }
         else if(channelIndex > 23)
         {
-            TV.printPGM(50,TV_Y_OFFSET+1*TV_Y_GRID,  PSTR("F/Airwave"));
+            TV.print_P(50,TV_Y_OFFSET+1*TV_Y_GRID,  PSTR("F/Airwave"));
         }
         else if (channelIndex > 15)
         {
-            TV.printPGM(50,TV_Y_OFFSET+1*TV_Y_GRID,  PSTR("E        "));
+            TV.print_P(50,TV_Y_OFFSET+1*TV_Y_GRID,  PSTR("E        "));
         }
         else if (channelIndex > 7)
         {
-            TV.printPGM(50,TV_Y_OFFSET+1*TV_Y_GRID,  PSTR("B        "));
+            TV.print_P(50,TV_Y_OFFSET+1*TV_Y_GRID,  PSTR("B        "));
         }
         else
         {
-            TV.printPGM(50,TV_Y_OFFSET+1*TV_Y_GRID,  PSTR("A        "));
+            TV.print_P(50,TV_Y_OFFSET+1*TV_Y_GRID,  PSTR("A        "));
         }
         // show channel inside band
         uint8_t active_channel = channelIndex%CHANNEL_BAND_SIZE; // get channel inside band
 
         TV.draw_rect(1 ,TV_Y_OFFSET-2+2*TV_Y_GRID,125,12,  BLACK, BLACK); // mark current channel
-        TV.printPGM(5 ,TV_Y_OFFSET-1+2*TV_Y_GRID,  PSTR("1 2 3 4 5 6 7 8"));
+        TV.print_P(5 ,TV_Y_OFFSET-1+2*TV_Y_GRID,  PSTR("1 2 3 4 5 6 7 8"));
         // set new marker
         TV.draw_rect(active_channel*16+2 ,TV_Y_OFFSET-2+2*TV_Y_GRID,12,12,  WHITE, INVERT); // mark current channel
 
@@ -175,7 +177,7 @@ void screens::updateSeekMode(uint8_t state, uint8_t channelIndex, uint8_t channe
         TV.print(50,TV_Y_OFFSET+3*TV_Y_GRID, channelFrequency);
     }
     // show signal strength
-    #define RSSI_BAR_SIZE 100
+#define RSSI_BAR_SIZE 100
     uint8_t rssi_scaled=map(rssi, 1, 100, 1, RSSI_BAR_SIZE);
     // clear last bar
     TV.draw_rect(25, TV_Y_OFFSET+4*TV_Y_GRID, RSSI_BAR_SIZE,4 , BLACK, BLACK);
@@ -183,7 +185,7 @@ void screens::updateSeekMode(uint8_t state, uint8_t channelIndex, uint8_t channe
     TV.draw_rect(25, TV_Y_OFFSET+4*TV_Y_GRID, rssi_scaled, 4 , WHITE, WHITE);
     // print bar for spectrum
 
-    #define SCANNER_BAR_MINI_SIZE 14
+#define SCANNER_BAR_MINI_SIZE 14
     rssi_scaled=map(rssi, 1, 100, 1, SCANNER_BAR_MINI_SIZE);
     // clear last bar
     TV.draw_rect((channel * 3)+4, (TV_ROWS - TV_SCANNER_OFFSET - SCANNER_BAR_MINI_SIZE), 2, SCANNER_BAR_MINI_SIZE , BLACK, BLACK);
@@ -203,11 +205,11 @@ void screens::updateSeekMode(uint8_t state, uint8_t channelIndex, uint8_t channe
             // fix title flicker
             TV.draw_rect(0,0,127,14, WHITE,BLACK);
             if(locked) {
-                TV.printPGM(((127-14*8)/2), TV_Y_OFFSET,  PSTR("AUTO MODE LOCK"));
+                TV.print_P(((127-14*8)/2), TV_Y_OFFSET,  PSTR("AUTO MODE LOCK"));
             }
             else
             {
-                TV.printPGM(((127-14*8)/2), TV_Y_OFFSET,  PSTR("AUTO MODE SEEK"));
+                TV.print_P(((127-14*8)/2), TV_Y_OFFSET,  PSTR("AUTO MODE SEEK"));
             }
             TV.draw_rect(0,0,127,14,  WHITE,INVERT);
         }
@@ -219,40 +221,33 @@ void screens::updateSeekMode(uint8_t state, uint8_t channelIndex, uint8_t channe
 void screens::bandScanMode(uint8_t state) {
     reset(); // start from fresh screen.
     best_rssi = 0;
-    if(state==STATE_SCAN)
-    {
+    if(state==STATE_SCAN)    {
         drawTitleBox("BAND SCANNER");
-    }
-    else
-    {
+    } else {
         drawTitleBox("RSSI SETUP");
     }
     TV.select_font(font8x8);
-    if(state==STATE_SCAN)
-    {
+    if(state==STATE_SCAN) {
         TV.select_font(font4x6);
         TV.draw_line(50,1*TV_Y_GRID,50, 1*TV_Y_GRID+9,WHITE);
-        TV.print(2, SCANNER_LIST_Y_POS, "BEST:");
-    }
-    else
-    {
+        TV.print_P(2, SCANNER_LIST_Y_POS, PSTR("BEST:"));
+    } else {
         TV.select_font(font4x6);
-        TV.print(10, SCANNER_LIST_Y_POS, "RSSI Min:     RSSI Max:   ");
+        TV.print_P(10, SCANNER_LIST_Y_POS, PSTR("RSSI Min:     RSSI Max:   "));
     }
     TV.draw_rect(0,1*TV_Y_GRID,TV_X_MAX,9,  WHITE); // list frame
     TV.draw_rect(0,TV_ROWS - TV_SCANNER_OFFSET,TV_X_MAX,13,  WHITE); // lower frame
     TV.select_font(font4x6);
-    TV.print(2, (TV_ROWS - TV_SCANNER_OFFSET + 2), "5645");
-    TV.print(57, (TV_ROWS - TV_SCANNER_OFFSET + 2), "5800");
-    TV.print(111, (TV_ROWS - TV_SCANNER_OFFSET + 2), "5945");
+    TV.print_P(2, (TV_ROWS - TV_SCANNER_OFFSET + 2), PSTR("5645"));
+    TV.print_P(57, (TV_ROWS - TV_SCANNER_OFFSET + 2), PSTR("5800"));
+    TV.print_P(111, (TV_ROWS - TV_SCANNER_OFFSET + 2), PSTR("5945"));
 }
 
 void screens::updateBandScanMode(bool in_setup, uint8_t channel, uint8_t rssi, uint8_t channelName, uint16_t channelFrequency, uint16_t rssi_setup_min_a, uint16_t rssi_setup_max_a) {
     // force tune on new scan start to get right RSSI value
     static uint8_t writePos=SCANNER_LIST_X_POS;
     // channel marker
-    if(channel != last_channel) // only updated on changes
-    {
+    if(channel != last_channel) { // only updated on changes
         // clear last square
         TV.draw_rect(1, (TV_ROWS - TV_SCANNER_OFFSET + 8),125,SCANNER_MARKER_SIZE,  BLACK, BLACK);
         // draw next
@@ -288,10 +283,10 @@ void screens::updateBandScanMode(bool in_setup, uint8_t channel, uint8_t rssi, u
         }
     }
     else {
-            TV.print(50, SCANNER_LIST_Y_POS, "   ");
+            TV.print_P(50, SCANNER_LIST_Y_POS, PSTR("   "));
             TV.print(50, SCANNER_LIST_Y_POS, rssi_setup_min_a , DEC);
 
-            TV.print(110, SCANNER_LIST_Y_POS, "   ");
+            TV.print_P(110, SCANNER_LIST_Y_POS, PSTR("   "));
             TV.print(110, SCANNER_LIST_Y_POS, rssi_setup_max_a , DEC);
     }
 
@@ -301,6 +296,7 @@ void screens::updateBandScanMode(bool in_setup, uint8_t channel, uint8_t rssi, u
 void screens::screenSaver(uint8_t channelName, uint16_t channelFrequency, const char *call_sign) {
     screenSaver(-1, channelName, channelFrequency, call_sign);
 }
+
 void screens::screenSaver(uint8_t diversity_mode, uint8_t channelName, uint16_t channelFrequency, const char *call_sign) {
  // not used in TVOut ... yet
 /*    reset();
@@ -314,13 +310,13 @@ void screens::screenSaver(uint8_t diversity_mode, uint8_t channelName, uint16_t 
 #ifdef USE_DIVERSITY
     switch(diversity_mode) {
         case useReceiverAuto:
-            TV.print(70,18,"AUTO");
+            TV.print_P(70,18,PSTR("AUTO"));
             break;
         case useReceiverA:
-            TV.print(70,18,"ANTENNA A");
+            TV.print_P(70,18,PSTR("ANTENNA A"));
             break;
         case useReceiverB:
-            TV.print(70,18,"ANTENNA B");
+            TV.print_P(70,18,PSTR("ANTENNA B"));
             break;
     }
     TV.draw_rect(0, 127-19, 7, 9, WHITE,BLACK);
@@ -342,19 +338,19 @@ void screens::updateScreenSaver(char active_receiver, uint8_t rssi, uint8_t rssi
 void screens::diversity(uint8_t diversity_mode) {
     reset();
     drawTitleBox("DIVERSITY");
-    TV.printPGM(10, 5+1*MENU_Y_SIZE, PSTR("Auto"));
-    TV.printPGM(10, 5+2*MENU_Y_SIZE, PSTR("Receiver A"));
-    TV.printPGM(10, 5+3*MENU_Y_SIZE, PSTR("Receiver B"));
+    TV.print_P(10, 5+1*MENU_Y_SIZE, PSTR("Auto"));
+    TV.print_P(10, 5+2*MENU_Y_SIZE, PSTR("Receiver A"));
+    TV.print_P(10, 5+3*MENU_Y_SIZE, PSTR("Receiver B"));
     // RSSI Strength
     TV.draw_line(0,3+4*MENU_Y_SIZE, TV_X_MAX, 3+4*MENU_Y_SIZE, WHITE);
-    TV.printPGM(10, 6+4*MENU_Y_SIZE, PSTR("A:"));
+    TV.print_P(10, 6+4*MENU_Y_SIZE, PSTR("A:"));
     TV.draw_line(0,3+5*MENU_Y_SIZE, TV_X_MAX, 3+5*MENU_Y_SIZE, WHITE);
-    TV.printPGM(10, 6+5*MENU_Y_SIZE, PSTR("B:"));
+    TV.print_P(10, 6+5*MENU_Y_SIZE, PSTR("B:"));
 
     TV.draw_rect(0,3+(diversity_mode+1)*MENU_Y_SIZE,127,12,  WHITE, INVERT);
 }
 void screens::updateDiversity(char active_receiver, uint8_t rssiA, uint8_t rssiB){
-    #define RSSI_BAR_SIZE 100
+#define RSSI_BAR_SIZE 100
     uint8_t rssi_scaled=map(rssiA, 1, 100, 1, RSSI_BAR_SIZE);
     // clear last bar
     TV.draw_rect(25+rssi_scaled, 6+4*MENU_Y_SIZE, RSSI_BAR_SIZE-rssi_scaled, 8 , BLACK, BLACK);
@@ -378,26 +374,26 @@ void screens::updateSetupMenu(uint8_t menu_id,bool settings_beeps,bool settings_
     reset();
     drawTitleBox("SETUP MENU");
 
-    TV.printPGM(5, 5+1*MENU_Y_SIZE, PSTR("ORDER: "));
+    TV.print_P(5, 5+1*MENU_Y_SIZE, PSTR("ORDER: "));
     if(settings_orderby_channel) {
-        TV.printPGM(5+(6*8), 5+1*MENU_Y_SIZE, PSTR("CHANNEL  "));
+        TV.print_P(5+(6*8), 5+1*MENU_Y_SIZE, PSTR("CHANNEL  "));
     }
     else {
-        TV.printPGM(5+(6*8), 5+1*MENU_Y_SIZE, PSTR("FREQUENCY"));
+        TV.print_P(5+(6*8), 5+1*MENU_Y_SIZE, PSTR("FREQUENCY"));
     }
 
 
-    TV.printPGM(5, 5+2*MENU_Y_SIZE, PSTR("BEEPS: "));
+    TV.print_P(5, 5+2*MENU_Y_SIZE, PSTR("BEEPS: "));
     if(settings_beeps) {
-        TV.printPGM(5+(6*8), 5+2*MENU_Y_SIZE, PSTR("ON "));
+        TV.print_P(5+(6*8), 5+2*MENU_Y_SIZE, PSTR("ON "));
     }
     else {
-        TV.printPGM(5+(6*8), 5+2*MENU_Y_SIZE, PSTR("OFF"));
+        TV.print_P(5+(6*8), 5+2*MENU_Y_SIZE, PSTR("OFF"));
     }
 
 
 /* NO NEED FOR CALL SIGN IN TVOUT MODE
-    TV.printPGM(10, 5+3*MENU_Y_SIZE, PSTR("SIGN : "));
+    TV.print_P(10, 5+3*MENU_Y_SIZE, PSTR("SIGN : "));
     if(editing>=0) {
         for(uint8_t i=0; i<10; i++) {
             TV.print(5+((7+i)*8), 5+3*MENU_Y_SIZE, call_sign[i]);
@@ -411,10 +407,10 @@ void screens::updateSetupMenu(uint8_t menu_id,bool settings_beeps,bool settings_
     }
 */
 
-    TV.printPGM(5, 5+4*MENU_Y_SIZE, PSTR("CALIBRATE RSSI"));
+    TV.print_P(5, 5+4*MENU_Y_SIZE, PSTR("CALIBRATE RSSI"));
 
 
-    TV.printPGM(5, 5+5*MENU_Y_SIZE, PSTR("SAVE & EXIT"));
+    TV.print_P(5, 5+5*MENU_Y_SIZE, PSTR("SAVE & EXIT"));
 
     TV.draw_rect(0,3+(menu_id+1)*MENU_Y_SIZE,127,12,  WHITE, INVERT);
 }
@@ -422,47 +418,42 @@ void screens::updateSetupMenu(uint8_t menu_id,bool settings_beeps,bool settings_
 void screens::save(uint8_t mode, uint8_t channelIndex, uint16_t channelFrequency, const char *call_sign) {
     reset();
     drawTitleBox("SAVE SETTINGS");
-    TV.printPGM(10, 5+1*MENU_Y_SIZE, PSTR("Mode:"));
+    TV.print_P(10, 5+1*MENU_Y_SIZE, PSTR("Mode:"));
     switch (mode)
     {
         case STATE_SCAN: // Band Scanner
-            TV.printPGM(50,5+1*MENU_Y_SIZE,  PSTR("Scanner"));
+            TV.print_P(50,5+1*MENU_Y_SIZE,  PSTR("Scanner"));
         break;
         case STATE_MANUAL: // manual mode
-            TV.printPGM(50,5+1*MENU_Y_SIZE,  PSTR("Manual"));
+            TV.print_P(50,5+1*MENU_Y_SIZE,  PSTR("Manual"));
         break;
         case STATE_SEEK: // seek mode
-            TV.printPGM(50,5+1*MENU_Y_SIZE,  PSTR("Search"));
+            TV.print_P(50,5+1*MENU_Y_SIZE,  PSTR("Search"));
         break;
     }
-    TV.printPGM(10, 5+2*MENU_Y_SIZE, PSTR("Band:"));
+    TV.print_P(10, 5+2*MENU_Y_SIZE, PSTR("Band:"));
     // print band
-    if(channelIndex > 31)
-    {
-        TV.printPGM(50,5+2*MENU_Y_SIZE,  PSTR("C/Race   "));
+    if(channelIndex > 31)  {
+        TV.print_P(50,5+2*MENU_Y_SIZE,  PSTR("C/Race   "));
     }
-    else if(channelIndex > 23)
-    {
-        TV.printPGM(50,5+2*MENU_Y_SIZE,  PSTR("F/Airwave"));
+    else if(channelIndex > 23) {
+        TV.print_P(50,5+2*MENU_Y_SIZE,  PSTR("F/Airwave"));
     }
-    else if (channelIndex > 15)
-    {
-        TV.printPGM(50,5+2*MENU_Y_SIZE,  PSTR("E        "));
+    else if (channelIndex > 15) {
+        TV.print_P(50,5+2*MENU_Y_SIZE,  PSTR("E        "));
     }
-    else if (channelIndex > 7)
-    {
-        TV.printPGM(50,5+2*MENU_Y_SIZE,  PSTR("B        "));
+    else if (channelIndex > 7)  {
+        TV.print_P(50,5+2*MENU_Y_SIZE,  PSTR("B        "));
+    }  else    {
+        TV.print_P(50,5+2*MENU_Y_SIZE,  PSTR("A        "));
     }
-    else
-    {
-        TV.printPGM(50,5+2*MENU_Y_SIZE,  PSTR("A        "));
-    }
-    TV.printPGM(10, 5+3*MENU_Y_SIZE, PSTR("Chan:"));
+    TV.print_P(10, 5+3*MENU_Y_SIZE, PSTR("Chan:"));
     uint8_t active_channel = channelIndex%CHANNEL_BAND_SIZE+1; // get channel inside band
+
     TV.print(50,5+3*MENU_Y_SIZE,active_channel,DEC);
-    TV.printPGM(10, 5+4*MENU_Y_SIZE, PSTR("FREQ:     GHz"));
+    TV.print_P(10, 5+4*MENU_Y_SIZE, PSTR("FREQ:     GHz"));
     TV.print(50,5+4*MENU_Y_SIZE, channelFrequency);
-    TV.printPGM(10, 5+5*MENU_Y_SIZE, PSTR("--- SAVED ---"));
+    TV.print_P(10, 5+5*MENU_Y_SIZE, PSTR("--- SAVED ---"));
 }
 
 void screens::updateSave(const char * msg) {

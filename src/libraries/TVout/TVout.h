@@ -71,13 +71,13 @@ TVout.cpp contains a brief expenation of each function.
 */
 class TVout {
 public:
-	uint8_t * screen;
+	static uint8_t * screen;
 	
 	char begin(uint8_t mode);
 	char begin(uint8_t mode, uint8_t x, uint8_t y);
 	void end();
-    void genlock();
-    void video_clock(uint8_t mode);
+        void genlock();
+        void video_clock(uint8_t mode);
     
 	//accessor functions
 	unsigned char hres();
@@ -121,18 +121,18 @@ public:
 	void set_cursor(uint8_t, uint8_t);
 	void select_font(const unsigned char * f);
 
-    void write(uint8_t);
-    void write(const char *str);
-    void write(const uint8_t *buffer, uint8_t size);
+        void write(uint8_t);
+        void write(const char *str);
+        void write(const uint8_t *buffer, uint8_t size);
 
-    void print(const char[]);
-    void print(char, int = BYTE);
-    void print(unsigned char, int = BYTE);
-    void print(int, int = DEC);
-    void print(unsigned int, int = DEC);
-    void print(long, int = DEC);
-    void print(unsigned long, int = DEC);
-    void print(double, int = 2);
+        void print(const char[]);
+        void print(char, int = BYTE);
+        void print(unsigned char, int = BYTE);
+        void print(int, int = DEC);
+        void print(unsigned int, int = DEC);
+        void print(long, int = DEC);
+        void print(unsigned long, int = DEC);
+        void print(double, int = 2);
 	
 	void print(uint8_t, uint8_t, const char[]);
 	void print(uint8_t, uint8_t, char, int = BYTE);
@@ -144,35 +144,35 @@ public:
 	void print(uint8_t, uint8_t, double, int = 2);
 	
 	void println(uint8_t, uint8_t, const char[]);
-    void println(uint8_t, uint8_t, char, int = BYTE);
-    void println(uint8_t, uint8_t, unsigned char, int = BYTE);
-    void println(uint8_t, uint8_t, int, int = DEC);
-    void println(uint8_t, uint8_t, unsigned int, int = DEC);
-    void println(uint8_t, uint8_t, long, int = DEC);
-    void println(uint8_t, uint8_t, unsigned long, int = DEC);
-    void println(uint8_t, uint8_t, double, int = 2);
-    void println(uint8_t, uint8_t);
+        void println(uint8_t, uint8_t, char, int = BYTE);
+        void println(uint8_t, uint8_t, unsigned char, int = BYTE);
+        void println(uint8_t, uint8_t, int, int = DEC);
+        void println(uint8_t, uint8_t, unsigned int, int = DEC);
+        void println(uint8_t, uint8_t, long, int = DEC);
+        void println(uint8_t, uint8_t, unsigned long, int = DEC);
+        void println(uint8_t, uint8_t, double, int = 2);
+        void println(uint8_t, uint8_t);
 
-    void println(const char[]);
-    void println(char, int = BYTE);
-    void println(unsigned char, int = BYTE);
-    void println(int, int = DEC);
-    void println(unsigned int, int = DEC);
-    void println(long, int = DEC);
-    void println(unsigned long, int = DEC);
-    void println(double, int = 2);
-    void println(void);
+        void println(const char[]);
+        void println(char, int = BYTE);
+        void println(unsigned char, int = BYTE);
+        void println(int, int = DEC);
+        void println(unsigned int, int = DEC);
+        void println(long, int = DEC);
+        void println(unsigned long, int = DEC);
+        void println(double, int = 2);
+        void println(void);
 	
-	void printPGM(const char[]);
-	void printPGM(uint8_t, uint8_t, const char[]);
+	void print_P(const char[]);
+	void print_P(uint8_t, uint8_t, const char[]);
 	
 private:
-	uint8_t cursor_x,cursor_y;
-	const unsigned char * font;
+	static uint8_t cursor_x,cursor_y;
+	static const unsigned char * font;
 	
 	void inc_txtline();
-    void printNumber(unsigned long, uint8_t);
-    void printFloat(double, uint8_t);
+	void printNumber(unsigned long, uint8_t);
+	void printFloat(double, uint8_t);
 };
 
 static void inline sp(unsigned char x, unsigned char y, char c); 
