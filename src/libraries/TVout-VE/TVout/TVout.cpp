@@ -36,7 +36,7 @@
 
 
 /* Call this to start video output with the default resolution.
- *
+ * 
  * Arguments:
  *	mode:
  *		The video standard to follow:
@@ -48,7 +48,7 @@
  *	4 if there is not enough memory.
  */
 char TVout::begin(uint8_t mode) {
-
+		
 	return begin(mode,128,96);
 } // end of begin
 
@@ -72,19 +72,19 @@ char TVout::begin(uint8_t mode) {
  *		4 if there is not enough memory for the frame buffer.
  */
 char TVout::begin(uint8_t mode, uint8_t x, uint8_t y) {
-
+	
 	// check if x is divisable by 8
 	if ( !(x & 0xF8))
 		return 1;
 	x = x/8;
-
+		
 	screen = (unsigned char*)malloc(x * y * sizeof(unsigned char));
 	if (screen == NULL)
 		return 4;
-
+		
 	cursor_x = 0;
 	cursor_y = 0;
-
+	
 	render_setup(mode,x,y,screen);
 	clear_screen();
 	return 0;
@@ -93,22 +93,10 @@ char TVout::begin(uint8_t mode, uint8_t x, uint8_t y) {
 
 /* Stop video render and free the used memory.
  */
-void TVout::end() {
-    TIMSK1 = 0;
-    free(screen);
+ void TVout::end() {
+	TIMSK1 = 0;
+	free(screen);
 }
-/* Enable genlock
-*/
-void TVout::genlock() {
-    display.enable_genlock=0;
-}
-
-/* Select video clock
-*/
-void TVout::video_clock(uint8_t mode) {
-    select_clock(mode);
-}
-
 
 
 /* Fill the screen with some color.
@@ -120,29 +108,29 @@ void TVout::video_clock(uint8_t mode) {
 */
 void TVout::fill(uint8_t color) {
 	switch(color) {
-	case BLACK:
-		cursor_x = 0;
-		cursor_y = 0;
-		for (int i = 0; i < (display.hres)*display.vres; i++)
-			display.screen[i] = 0;
-		break;
-	case WHITE:
-		cursor_x = 0;
-		cursor_y = 0;
-		for (int i = 0; i < (display.hres)*display.vres; i++)
-			display.screen[i] = 0xAA;
-		break;
-	case INVERT:
-		for (int i = 0; i < display.hres*display.vres; i++)
-			display.screen[i] = ~display.screen[i];
-		break;
+		case BLACK:
+			cursor_x = 0;
+			cursor_y = 0;
+			for (int i = 0; i < (display.hres)*display.vres; i++)
+				display.screen[i] = 0;
+			break;
+		case WHITE:
+			cursor_x = 0;
+			cursor_y = 0;
+			for (int i = 0; i < (display.hres)*display.vres; i++)
+				display.screen[i] = 0xFF;
+			break;
+		case INVERT:
+			for (int i = 0; i < display.hres*display.vres; i++)
+				display.screen[i] = ~display.screen[i];
+			break;
 	}
 } // end of fill
 
 
 /* Gets the Horizontal resolution of the screen
  *
- * Returns:
+ * Returns: 
  *	The horizonal resolution.
 */
 unsigned char TVout::hres() {
@@ -255,7 +243,7 @@ void TVout::force_linestart(uint8_t line) {
 
 
 /* Set the color of a pixel
- *
+ * 
  * Arguments:
  *	x:
  *		The x coordinate of the pixel.
@@ -273,7 +261,7 @@ void TVout::set_pixel(uint8_t x, uint8_t y, char c) {
 
 
 /* get the color of the pixel at x,y
- *
+ * 
  * Arguments:
  *	x:
  *		The x coordinate of the pixel.
@@ -326,7 +314,7 @@ void TVout::draw_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, char c) {
 
 		x = x0;
 		y = y0;
-
+	
 		//take absolute value
 		if (x1 < x0) {
 			dx = x0 - x1;
@@ -354,20 +342,20 @@ void TVout::draw_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, char c) {
 			s2 = 1;
 		}
 
-		xchange = 0;
+		xchange = 0;   
 
 		if (dy>dx) {
 			temp = dx;
 			dx = dy;
 			dy = temp;
 			xchange = 1;
-		}
+		} 
 
-		e = ((int)dy<<1) - dx;
-
+		e = ((int)dy<<1) - dx;  
+	 
 		for (j=0; j<=dx; j++) {
 			sp(x,y,c);
-
+		 
 			if (e>=0) {
 				if (xchange==1) x = x + s1;
 				else y = y + s2;
@@ -398,7 +386,7 @@ void TVout::draw_line(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, char c) {
 */
 void TVout::draw_row(uint8_t line, uint16_t x0, uint16_t x1, uint8_t c) {
 	uint8_t lbit, rbit;
-
+	
 	if (x0 == x1)
 		set_pixel(x0,line,c);
 	else {
@@ -454,7 +442,7 @@ void TVout::draw_column(uint8_t row, uint16_t y0, uint16_t y1, uint8_t c) {
 
 	unsigned char bit;
 	int byte;
-
+	
 	if (y0 == y1)
 		set_pixel(row,y0,c);
 	else {
@@ -491,7 +479,7 @@ void TVout::draw_column(uint8_t row, uint16_t y0, uint16_t y1, uint8_t c) {
 
 
 /* draw a rectangle at x,y with a specified width and height
- *
+ * 
  * Arguments:
  *	x0:
  *		The x coordinate of upper left corner of the rectangle.
@@ -510,7 +498,7 @@ void TVout::draw_column(uint8_t row, uint16_t y0, uint16_t y1, uint8_t c) {
  *		default =-1 (no fill)
 */
 void TVout::draw_rect(uint8_t x0, uint8_t y0, uint8_t w, uint8_t h, char c, char fc) {
-
+	
 	if (fc != -1) {
 		for (unsigned char i = y0; i < y0+h; i++)
 			draw_row(i,x0,x0+w,fc);
@@ -547,17 +535,17 @@ void TVout::draw_circle(uint8_t x0, uint8_t y0, uint8_t radius, char c, char fc)
 	int x = 0;
 	int y = radius;
 	uint8_t pyy = y,pyx = x;
-
-
+	
+	
 	//there is a fill color
 	if (fc != -1)
 		draw_row(y0,x0-radius,x0+radius,fc);
-
+	
 	sp(x0, y0 + radius,c);
 	sp(x0, y0 - radius,c);
 	sp(x0 + radius, y0,c);
 	sp(x0 - radius, y0,c);
-
+	
 	while(x < y) {
 		if(f >= 0) {
 			y--;
@@ -567,7 +555,7 @@ void TVout::draw_circle(uint8_t x0, uint8_t y0, uint8_t radius, char c, char fc)
 		x++;
 		ddF_x += 2;
 		f += ddF_x;
-
+		
 		//there is a fill color
 		if (fc != -1) {
 			//prevent double draws on the same rows
@@ -618,7 +606,7 @@ void TVout::bitmap(uint8_t x, uint8_t y, const unsigned char * bmp,
 
 	uint8_t temp, lshift, rshift, save, xtra;
 	uint16_t si = 0;
-
+	
 	rshift = x&7;
 	lshift = 8-rshift;
 	if (width == 0) {
@@ -629,7 +617,7 @@ void TVout::bitmap(uint8_t x, uint8_t y, const unsigned char * bmp,
 		lines = pgm_read_byte((uint32_t)(bmp) + i);
 		i++;
 	}
-
+		
 	if (width&7) {
 		xtra = width&7;
 		width = width/8;
@@ -639,7 +627,7 @@ void TVout::bitmap(uint8_t x, uint8_t y, const unsigned char * bmp,
 		xtra = 8;
 		width = width/8;
 	}
-
+	
 	for (uint8_t l = 0; l < lines; l++) {
 		si = (y + l)*display.hres + x/8;
 		if (width == 1)
@@ -689,7 +677,7 @@ void TVout::shift(uint8_t distance, uint8_t direction) {
 			dst = display.screen;
 			src = display.screen + distance*display.hres;
 			end = display.screen + display.vres*display.hres;
-
+				
 			while (src <= end) {
 				*dst = *src;
 				*src = 0;
@@ -701,7 +689,7 @@ void TVout::shift(uint8_t distance, uint8_t direction) {
 			dst = display.screen + display.vres*display.hres;
 			src = dst - distance*display.hres;
 			end = display.screen;
-
+				
 			while (src >= end) {
 				*dst = *src;
 				*src = 0;
@@ -711,7 +699,7 @@ void TVout::shift(uint8_t distance, uint8_t direction) {
 			break;
 		case LEFT:
 			shift = distance & 7;
-
+			
 			for (uint8_t line = 0; line < display.vres; line++) {
 				dst = display.screen + display.hres*line;
 				src = dst + distance/8;
@@ -733,7 +721,7 @@ void TVout::shift(uint8_t distance, uint8_t direction) {
 			break;
 		case RIGHT:
 			shift = distance & 7;
-
+			
 			for (uint8_t line = 0; line < display.vres; line++) {
 				dst = display.screen + display.hres-1 + display.hres*line;
 				src = dst - distance/8;
@@ -760,7 +748,7 @@ void TVout::shift(uint8_t distance, uint8_t direction) {
 /* Inline version of set_pixel that does not perform a bounds check
  * This function will be replaced by a macro.
 */
-void inline sp(uint8_t x, uint8_t y, char c) {
+static void inline sp(uint8_t x, uint8_t y, char c) {
 	if (c==1)
 		display.screen[(x/8) + (y*display.hres)] |= 0x80 >> (x&7);
 	else if (c==0)
@@ -832,7 +820,7 @@ void TVout::tone(unsigned int frequency, unsigned long duration_ms) {
 	//most of this is taken from Tone.cpp from Arduino
 	uint8_t prescalarbits = 0b001;
 	uint32_t ocr = 0;
-
+  
 
     DDR_SND |= _BV(SND_PIN); //set pb3 (digital pin 11) to output
 
@@ -873,7 +861,7 @@ void TVout::tone(unsigned int frequency, unsigned long duration_ms) {
 		remainingToneVsyncs = duration_ms*60/1000; //60 here represents the framerate
 	else
 		remainingToneVsyncs = -1;
-
+ 
     // Set the OCR for the given timer,
     OCR2A = ocr;
     //set it to toggle the pin by itself
@@ -887,3 +875,20 @@ void TVout::noTone() {
 	TCCR2B = 0;
 	PORT_SND &= ~(_BV(SND_PIN)); //set pin 11 to 0
 } // end of noTone
+
+// BEGIN Video Experimenter
+void TVout::capture() {
+  captureFlag = 1;
+  while (captureFlag > 0);
+}
+
+void TVout::resume() {
+  resume_render();
+}
+
+void TVout::setDataCapture(int line, int wait, uint8_t *buf) {
+  dataCaptureLine = line;
+  dataCaptureWait = wait;
+  dataCaptureBuf = buf;
+}
+// END Video Experimenter

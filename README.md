@@ -34,6 +34,9 @@ This project originated [here](https://code.google.com/p/rx5808-pro/) and has be
 - *(NEW)* **Setup Menu** - Creating menu for toggling settings.
 - *(REMOVED)* ~~**DIP mode** - Set channel by extern DIP switch~~
 - *(new) 4-way AV-switch instead of manual - menu visible 10 seconds after any key press
+- *(very new) No manual switch - menu comes to screen for 5s after any key press
+- *(very new) Battery voltage control with beeps in low voltage
+- *(very new) Band scan with step 2MHz - not by channels
 
 ##Usage
 ####Screens
@@ -130,6 +133,7 @@ Please follow [CONTRIBUTING.md](CONTRIBUTING.md) for standard practices regardin
 - Separating Display concerns for TVOut and OLED by Shea Ivey
 - Adding Setup Menu by Shea Ivey
 - DIY Throughole board and documentation. by RCDaddy
+
 
 ####License
 The MIT License (MIT)

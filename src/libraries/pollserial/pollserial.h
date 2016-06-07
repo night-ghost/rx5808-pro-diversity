@@ -24,8 +24,14 @@
 #ifndef PSERIAL_H
 #define PSERIAL_H
 
+#ifdef HardwareSerial_h
+# error Must include SingleSerial.h before the Arduino serial driver is defined.
+#endif
+#define HardwareSerial_h
+
 #include <inttypes.h>
-#include "Print.h"
+//#include "Print.h"
+#include "BetterStream.h"
 
 typedef struct {
 	uint8_t head;
@@ -36,20 +42,25 @@ typedef struct {
 //define a void function() return type.
 typedef void (*pt2Funct)();
 
-class pollserial : public Print {
+//class pollserial : public Print {
+class pollserial : public BetterStream {
 	public:
 		pt2Funct begin(long);
 		void end();
 		uint8_t available(void);
-		int read(void);
+		uint8_t read(void);
+		uint8_t peek(void);
 		void flush(void);
 #if defined(ARDUINO) && ARDUINO >= 100
 		virtual size_t write(uint8_t);
 #else
 		virtual void write(uint8_t);
 #endif
-		using Print::write; // pull in write(str) and write(buf, size) from Print
+		//using Print::write; // pull in write(str) and write(buf, size) from Print
+		using BetterStream::write;
 };
 
 void USART_recieve();
+
+extern class pollserial Serial;
 #endif

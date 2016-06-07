@@ -74,5 +74,5 @@ void render_line6c();
 void render_line5c();
 void render_line4c();
 void render_line3c();
-static void inline wait_until(uint8_t time);
+void inline wait_until(uint8_t time);
 #endif

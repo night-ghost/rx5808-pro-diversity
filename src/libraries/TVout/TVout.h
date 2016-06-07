@@ -175,5 +175,5 @@ private:
 	void printFloat(double, uint8_t);
 };
 
-static void inline sp(unsigned char x, unsigned char y, char c); 
+void inline sp(unsigned char x, unsigned char y, char c); 
 #endif

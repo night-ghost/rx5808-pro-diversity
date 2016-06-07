@@ -27,6 +27,7 @@ SOFTWARE.
 #ifndef settings_h
 #define settings_h
 
+
 // Choose the display you will be using
 // you will also have to uncomment the includes in the main project.
 #define TVOUT_SCREENS
@@ -35,18 +36,26 @@ SOFTWARE.
 // u8glib has performance issues.
 //#define OLED_128x64_U8G_SCREENS
 
+
+#define FONT_X 8
+#define FONT_Y 8
+
+
 // this will be displayed on the screensaver.
 // Up to 10 letters
 #define CALL_SIGN "CALL SIGN"
 
 // Feature Togglels
 //#define DEBUG
+
 #define USE_DIVERSITY
 
 
 #define spiDataPin 10
 #define slaveSelectPin 11
 #define spiClockPin 12
+
+// pin 8 free
 
 // Receiver PINS
 #define SWITCH_0_PIN A0
@@ -74,6 +83,8 @@ SOFTWARE.
 
 #define PULLDN_PIN A5
 #define VIDEO_ON_PIN A2
+// a3 free
+
 
 // this two are minimum required
 #define buttonUp 4
@@ -81,18 +92,18 @@ SOFTWARE.
 // optional comfort buttons
 #define buttonDown 6
 
-#define buttonSave A3
+//#define buttonSave A3
 #define BATTERY_IN A4
 
 // Buzzer
-#define buzzer 6
+#define PIN_buzzer 3
 
 // key debounce delay in ms
 // NOTE: good values are in the range of 100-200ms
 // shorter values will make it more reactive, but may lead to double trigger
 #define KEY_DEBOUNCE 200
 
-#define led 13 // ARDUINO led PIN
+#define LED_PIN 13 // ARDUINO led PIN
 
 // number of analog rssi reads to average for the current check.
 #define RSSI_READS 50
@@ -106,46 +117,46 @@ SOFTWARE.
 // scan loops for setup run
 #define RSSI_SETUP_RUN 3
 
-#define STATE_SEEK_FOUND 0
-#define STATE_SEEK 1
-#define STATE_SCAN 2
-#define STATE_MANUAL 3
-#ifdef USE_DIVERSITY
-    #define STATE_DIVERSITY 4
-#endif
-#define STATE_SETUP_MENU 5
-#define STATE_SAVE 6
-#define STATE_RSSI_SETUP 7
-#define STATE_SCREEN_SAVER 8
+#define STATE_NONE 0
+#define STATE_SEEK_FOUND 1
+#define STATE_SEEK 2
+#define STATE_SCAN 3
+#define STATE_MANUAL 4
+#define STATE_DIVERSITY 5
+#define STATE_SETUP_MENU 6
+#define STATE_SAVE 7
+#define STATE_RSSI_SETUP 8
+#define STATE_SCREEN_SAVER 9
 
-#define START_STATE STATE_SEEK
-#define MAX_STATE STATE_MANUAL
+//#define START_STATE (STATE_SEEK)
+#define START_STATE (STATE_SCREEN_SAVER)
+#define MAX_STATE (STATE_MANUAL)
 
 #define CHANNEL_BAND_SIZE 8
 #define CHANNEL_MIN_INDEX 0
 #define CHANNEL_MAX_INDEX 39
 
+#define FREQ_MIN 5640 
+#define FREQ_MAX 5950
+
 #define CHANNEL_MAX 39
 #define CHANNEL_MIN 0
 
 #define EEPROM_ADR_STATE 0
+
 #define EEPROM_ADR_TUNE 1
-#define EEPROM_ADR_RSSI_MIN_A_L 2
-#define EEPROM_ADR_RSSI_MIN_A_H 3
-#define EEPROM_ADR_RSSI_MAX_A_L 4
-#define EEPROM_ADR_RSSI_MAX_A_H 5
-#ifdef USE_DIVERSITY
-    #define EEPROM_ADR_DIVERSITY 6
-    #define EEPROM_ADR_RSSI_MIN_B_L 7
-    #define EEPROM_ADR_RSSI_MIN_B_H 8
-    #define EEPROM_ADR_RSSI_MAX_B_L 9
-    #define EEPROM_ADR_RSSI_MAX_B_H 10
-#endif
+#define EEPROM_ADR_RSSI_MIN_A 2
+#define EEPROM_ADR_RSSI_MAX_A 4
+
+#define EEPROM_ADR_DIVERSITY 6
+#define EEPROM_ADR_RSSI_MIN_B 7
+#define EEPROM_ADR_RSSI_MAX_B 9
 
 #define EEPROM_ADR_BEEP 11
 #define EEPROM_ADR_ORDERBY 12
-#define EEPROM_ADR_CALLSIGN 20
+#define EEPROM_ADR_CALLSIGN 20 // 10 chars
 
+#define EEPROM_ADR_FREQ 32
 
 #endif // file_defined
 

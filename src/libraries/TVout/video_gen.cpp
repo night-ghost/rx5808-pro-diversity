@@ -260,7 +260,7 @@ void vsync_line() {
 }
 
 
-static void inline wait_until(uint8_t time) {
+void inline wait_until(uint8_t time) {
 	__asm__ __volatile__ (
 			"subi	%[time], 10\n"
 			"sub	%[time], %[tcnt1l]\n\t"

@@ -23,9 +23,10 @@
   Modified July 2010 by Myles D. Metzler
 */
 
+
+#include "pollserial.h"
 #include <avr/io.h>
 #include <stdlib.h>
-#include "pollserial.h"
 
 #define BUFFER_SIZE 64
 
@@ -110,9 +111,9 @@ uint8_t pollserial::available() {
 	return (BUFFER_SIZE + rxbuffer.head - rxbuffer.tail) & (BUFFER_SIZE-1);
 }
 
-int pollserial::read() {
+uint8_t pollserial::read() {
 	if (rxbuffer.head == rxbuffer.tail)
-		return -1;
+		return 0;
 	else {
 		uint8_t c = rxbuffer.buffer[rxbuffer.tail];
 		//tail = (tail + 1) & 63;
@@ -122,6 +123,15 @@ int pollserial::read() {
 			rxbuffer.tail = 0;
 		else
 			rxbuffer.tail++;
+		return c;
+	}
+}
+
+uint8_t pollserial::peek() {
+	if (rxbuffer.head == rxbuffer.tail)
+		return 0;
+	else {
+		uint8_t c = rxbuffer.buffer[rxbuffer.tail];
 		return c;
 	}
 }
