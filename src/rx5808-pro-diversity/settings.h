@@ -50,53 +50,48 @@ SOFTWARE.
 
 #define USE_DIVERSITY
 
-
-#define spiDataPin 10
-#define slaveSelectPin 11
-#define spiClockPin 12
-
-// pin 8 free
-
-// Receiver PINS
-#define SWITCH_0_PIN A0
-#define rssiPinA A6
-
-
-#define SWITCH_1_PIN A1
-
-
-#define useReceiverA 1
-
-#ifdef USE_DIVERSITY
-    // Diversity
-    #define rssiPinB A7
-    #define useReceiverAuto 0
-    #define useReceiverB 2
-    // rssi strenth should be 2% greater than other receiver before switch.
-    // this pervents flicker when rssi values are close and delays diversity checks counter.
-    #define DIVERSITY_CUTOVER 2
-    // number of checks a receiver needs to win over the other to switch receivers.
-    // this pervents rapid switching.
-    // 1 to 10 is a good range. 1 being fast switching, 10 being slow 100ms to switch.
-    #define DIVERSITY_MAX_CHECKS 5
-#endif
-
-#define PULLDN_PIN A5
-#define VIDEO_ON_PIN A2
-// a3 free
-
-
+// Buzzer
+#define PIN_buzzer 3
 // this two are minimum required
 #define buttonUp 4
 #define buttonMode 5
 // optional comfort buttons
 #define buttonDown 6
+// pins 7 & 9 - video out
+// pin 8 free ?!
+#define spiDataPin 10
+#define slaveSelectPin 11
+#define spiClockPin 12
+
+
+
+
+
+// Receiver PINS
+#define SWITCH_0_PIN A0
+#define SWITCH_1_PIN A1
+#define VIDEO_ON_PIN A2
+// a3 free
 
 //#define buttonSave A3
 #define BATTERY_IN A4
+#define PULLDN_PIN A5
+#define rssiPinA A6
+#define rssiPinB A7
 
-// Buzzer
-#define PIN_buzzer 3
+#define useReceiverAuto 0
+#define useReceiverA 1
+#define useReceiverB 2
+
+// Diversity
+
+    // rssi strenth should be 2% greater than other receiver before switch.
+    // this pervents flicker when rssi values are close and delays diversity checks counter.
+#define DIVERSITY_CUTOVER 2
+    // number of checks a receiver needs to win over the other to switch receivers.
+    // this pervents rapid switching.
+    // 1 to 10 is a good range. 1 being fast switching, 10 being slow 100ms to switch.
+#define DIVERSITY_MAX_CHECKS 5
 
 // key debounce delay in ms
 // NOTE: good values are in the range of 100-200ms

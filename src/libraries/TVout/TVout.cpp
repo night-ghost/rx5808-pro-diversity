@@ -78,9 +78,19 @@ char TVout::begin(uint8_t mode, uint8_t x, uint8_t y) {
 		return 1;
 	x = x/8;
 
-	screen = (unsigned char*)malloc(x * y * sizeof(unsigned char));
+	byte *bp = (unsigned char*)malloc(x * y * sizeof(unsigned char)); // 1536 bytes
 	if (screen == NULL)
 		return 4;
+	
+	begin(mode,x,y,bp);
+
+
+	return 0;
+} // end of begin
+
+char TVout::begin(uint8_t mode, uint8_t x, uint8_t y, byte *buffer) {
+
+	screen = buffer;
 
 	cursor_x = 0;
 	cursor_y = 0;
@@ -193,6 +203,7 @@ void TVout::delay(unsigned int x) {
  */
 void TVout::delay_frame(unsigned int x) {
 	int stop_line = (int)(display.start_render + (display.vres*(display.vscale_const+1)))+1;
+
 	while (x) {
 		while (display.scanLine != stop_line);
 		while (display.scanLine == stop_line);
@@ -208,12 +219,11 @@ void TVout::delay_frame(unsigned int x) {
  *	The time in ms since video generation has started.
 */
 unsigned long TVout::millis() {
-	if (display.lines_frame == _NTSC_LINE_FRAME) {
-		return display.frames * _NTSC_TIME_SCANLINE * _NTSC_LINE_FRAME / 1000;
-	}
-	else {
-		return display.frames * _PAL_TIME_SCANLINE * _PAL_LINE_FRAME / 1000;
-	}
+    if (display.lines_frame == _NTSC_LINE_FRAME) {
+	return display.frames * _NTSC_TIME_SCANLINE * _NTSC_LINE_FRAME / 1000;
+    } else {
+	return display.frames * _PAL_TIME_SCANLINE * _PAL_LINE_FRAME / 1000;
+    }
 } // end of millis
 
 
@@ -685,74 +695,77 @@ void TVout::shift(uint8_t distance, uint8_t direction) {
 	uint8_t shift;
 	uint8_t tmp;
 	switch(direction) {
-		case UP:
-			dst = display.screen;
-			src = display.screen + distance*display.hres;
-			end = display.screen + display.vres*display.hres;
+	case UP:
+		dst = display.screen;
+		src = display.screen + distance*display.hres;
+		end = display.screen + display.vres*display.hres;
 
+		while (src <= end) {
+			*dst = *src;
+			*src = 0;
+			dst++;
+			src++;
+		}
+		break;
+
+	case DOWN:
+		dst = display.screen + display.vres*display.hres;
+		src = dst - distance*display.hres;
+		end = display.screen;
+
+		while (src >= end) {
+			*dst = *src;
+			*src = 0;
+			dst--;
+			src--;
+		}
+		break;
+
+	case LEFT:
+		shift = distance & 7;
+
+		for (uint8_t line = 0; line < display.vres; line++) {
+			dst = display.screen + display.hres*line;
+			src = dst + distance/8;
+			end = dst + display.hres-2;
 			while (src <= end) {
-				*dst = *src;
-				*src = 0;
-				dst++;
-				src++;
-			}
-			break;
-		case DOWN:
-			dst = display.screen + display.vres*display.hres;
-			src = dst - distance*display.hres;
-			end = display.screen;
-
-			while (src >= end) {
-				*dst = *src;
-				*src = 0;
-				dst--;
-				src--;
-			}
-			break;
-		case LEFT:
-			shift = distance & 7;
-
-			for (uint8_t line = 0; line < display.vres; line++) {
-				dst = display.screen + display.hres*line;
-				src = dst + distance/8;
-				end = dst + display.hres-2;
-				while (src <= end) {
-					tmp = 0;
-					tmp = *src << shift;
-					*src = 0;
-					src++;
-					tmp |= *src >> (8 - shift);
-					*dst = tmp;
-					dst++;
-				}
 				tmp = 0;
 				tmp = *src << shift;
 				*src = 0;
+				src++;
+				tmp |= *src >> (8 - shift);
 				*dst = tmp;
+				dst++;
 			}
-			break;
-		case RIGHT:
-			shift = distance & 7;
+			tmp = 0;
+			tmp = *src << shift;
+			*src = 0;
+			*dst = tmp;
+		}
+		break;
 
-			for (uint8_t line = 0; line < display.vres; line++) {
-				dst = display.screen + display.hres-1 + display.hres*line;
-				src = dst - distance/8;
-				end = dst - display.hres+2;
-				while (src >= end) {
-					tmp = 0;
-					tmp = *src >> shift;
-					*src = 0;
-					src--;
-					tmp |= *src << (8 - shift);
-					*dst = tmp;
-					dst--;
-				}
+	case RIGHT:
+		shift = distance & 7;
+
+		for (uint8_t line = 0; line < display.vres; line++) {
+			dst = display.screen + display.hres-1 + display.hres*line;
+			src = dst - distance/8;
+			end = dst - display.hres+2;
+			while (src >= end) {
 				tmp = 0;
 				tmp = *src >> shift;
 				*src = 0;
+				src--;
+				tmp |= *src << (8 - shift);
 				*dst = tmp;
+				dst--;
 			}
-			break;
+			tmp = 0;
+			tmp = *src >> shift;
+        		*src = 0;
+			*dst = tmp;
+		}
+		break;
 	}
 } // end of shift
 
@@ -837,36 +850,38 @@ void TVout::tone(unsigned int frequency, unsigned long duration_ms) {
     DDR_SND |= _BV(SND_PIN); //set pb3 (digital pin 11) to output
 
     //we are using an 8 bit timer, scan through prescalars to find the best fit
-	ocr = F_CPU / frequency / 2 - 1;
+    ocr = F_CPU / frequency / 2 - 1;
+
     prescalarbits = 0b001;  // ck/1: same for both timers
     if (ocr > 255) {
         ocr = F_CPU / frequency / 2 / 8 - 1;
         prescalarbits = 0b010;  // ck/8: same for both timers
-
-        if (ocr > 255) {
-			ocr = F_CPU / frequency / 2 / 32 - 1;
-			prescalarbits = 0b011;
-        }
-
-        if (ocr > 255) {
-			ocr = F_CPU / frequency / 2 / 64 - 1;
-			prescalarbits = TIMER == 0 ? 0b011 : 0b100;
-			if (ocr > 255) {
-				ocr = F_CPU / frequency / 2 / 128 - 1;
-				prescalarbits = 0b101;
-			}
-
-			if (ocr > 255) {
-				ocr = F_CPU / frequency / 2 / 256 - 1;
-				prescalarbits = TIMER == 0 ? 0b100 : 0b110;
-				if (ocr > 255) {
-					// can't do any better than /1024
-					ocr = F_CPU / frequency / 2 / 1024 - 1;
-					prescalarbits = TIMER == 0 ? 0b101 : 0b111;
-				}
-			}
-        }
     }
+    if (ocr > 255) {
+	ocr = F_CPU / frequency / 2 / 32 - 1;
+	prescalarbits = 0b011;
+    }
+
+    if (ocr > 255) {
+	ocr = F_CPU / frequency / 2 / 64 - 1;
+	prescalarbits = TIMER == 0 ? 0b011 : 0b100;
+    }
+
+    if (ocr > 255) {
+	ocr = F_CPU / frequency / 2 / 128 - 1;
+	prescalarbits = 0b101;
+    }
+
+    if (ocr > 255) {
+	ocr = F_CPU / frequency / 2 / 256 - 1;
+	prescalarbits = TIMER == 0 ? 0b100 : 0b110;
+    }
+    if (ocr > 255) {
+	// can't do any better than /1024
+	ocr = F_CPU / frequency / 2 / 1024 - 1;
+	prescalarbits = TIMER == 0 ? 0b101 : 0b111;
+    }
+    
     TCCR2B = prescalarbits;
 
 	if (duration_ms > 0)

@@ -173,6 +173,7 @@ byte n_cells=0;
 void setup()
 {
 // 	TV.set_hbi_hook(pserial.begin(57600));
+
 #ifdef DEBUG
 //    Serial.begin(57600);
 //    Serial.println(F("START:"));
@@ -276,7 +277,14 @@ void setup()
     // rotate the display output 180 degrees.
     // drawScreen.flip(); // OLED only!
 
+    TV.set_vbi_hook(check_buttons);
+
 }
+
+void check_buttons(){ // called on each Vertical Blank 20/s
+    
+}
+
 
 // LOOP ----------------------------------------------------------------------------
 void loop() {

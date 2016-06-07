@@ -67,12 +67,15 @@ screens::screens() {
     last_rssi = 0;
 }
 
+
+static byte TV_BUFFER[TV_COLS*TV_ROWS/8]; // video memory 128 * 
+
 char screens::begin(const char *call_sign) {
     // 0 if no error.
     // 1 if x is not divisable by 8.
     // 2 if y is to large (NTSC only cannot fill PAL vertical resolution by 8bit limit)
     // 4 if there is not enough memory for the frame buffer.
-    return TV.begin(TV_FORMAT, TV_COLS, TV_ROWS);
+    return TV.begin(TV_FORMAT, TV_COLS, TV_ROWS, &TV_BUFFER);
 }
 
 

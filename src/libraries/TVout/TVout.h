@@ -75,6 +75,7 @@ public:
 	
 	char begin(uint8_t mode);
 	char begin(uint8_t mode, uint8_t x, uint8_t y);
+	char begin(uint8_t mode, uint8_t x, uint8_t y, byte * buffer);
 	void end();
         void genlock();
         void video_clock(uint8_t mode);
