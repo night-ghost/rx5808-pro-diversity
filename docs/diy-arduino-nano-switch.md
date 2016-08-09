@@ -5,9 +5,10 @@
 - 1x 470 resistor
 - 3x 330 resistor
 - 3x 75 resistor
-- GL3812 video switch
-- 1x150 resistor
+- 1x GL3812 video switch
+- 1x 150 resistor
 - 1x NPN transistor
+- 3x 10uF capacitor
 - 2x rx5808 receiver with [spi mod](rx5808-spi-mod.md)
 - 3x LEDs
 - 3x Momentary switch
